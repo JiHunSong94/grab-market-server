@@ -49,11 +49,11 @@ app.post('/products', (req, res) => {
     res.status(400).send('모든 필드를 입력해주세요'); // status가 200으로 보내지기 때문에 구분하기 위해, 400 -> 사용자가 잘못 했다.
   }
   models.Product.create({
-    name,
     description,
     price,
     seller,
     imageUrl,
+    name,
   })
     .then((result) => {
       console.log('상품 생성 결과 : ', result);
