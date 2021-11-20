@@ -25,6 +25,22 @@ app.use(
   이미지를 받아서 해당 imageurl에 맞춰서 node 서버에 있는 이미지를 불러왔다.*/
 );
 
+app.get('/banners', (req, res) => {
+  models.Banner.findAll({
+    // findAll은 다양한 객체의 속성을 넣을 수 있다.
+    limit: 2,
+  })
+    .then((result) => {
+      res.send({
+        banners: result,
+      });
+    })
+    .catch((erorr) => {
+      console.error(erorr);
+      res.status(500).send('에러가 발생했습니다.');
+    });
+});
+
 app.get('/products', (req, res) => {
   models.Product.findAll({
     order: [['createdAt', 'DESC']],
