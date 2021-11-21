@@ -44,7 +44,15 @@ app.get('/banners', (req, res) => {
 app.get('/products', (req, res) => {
   models.Product.findAll({
     order: [['createdAt', 'DESC']],
-    attributes: ['id', 'name', 'price', 'createdAt', 'seller', 'imageUrl'],
+    attributes: [
+      'id',
+      'name',
+      'price',
+      'createdAt',
+      'seller',
+      'imageUrl',
+      'soldout',
+    ],
   })
     .then((result) => {
       console.log('PRODUCTS : ', result);
@@ -85,7 +93,7 @@ app.post('/products', (req, res) => {
 
 app.get('/products/:id', (req, res) => {
   const params = req.params;
-  const { id } = params;
+  const { id } = params; //req.params(파라미터)안에 있는 id를 뽑는 작업
   models.Product.findOne({
     where: {
       id: id,
@@ -110,6 +118,30 @@ app.post('/image', upload.single('image'), (req, res) => {
   res.send({
     imageUrl: file.path,
   });
+});
+
+// 제품의 soldout 레코드 post
+app.post('/purchase/:id', (req, res) => {
+  const { id } = req.params; //req.params(파라미터)안에 있는 id를 뽑는 작업
+  models.Product.update(
+    {
+      soldout: 1, // 1이면 soldout 아니면 재고 남아 있는 것
+    },
+    {
+      where: {
+        id,
+      },
+    }
+  )
+    .then((result) => {
+      res.send({
+        result: true,
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('에러가 발생했습니다.');
+    });
 });
 
 app.listen(port, () => {
