@@ -26,6 +26,10 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0, // 데이터베이스에 있는 레코드가 하나 생성될때 soldout에 값을 안 넣었다면 defaultValue가 작동한다.
     },
+    type: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
   });
   return product;
 };
