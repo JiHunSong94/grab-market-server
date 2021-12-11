@@ -148,6 +148,33 @@ app.post('/purchase/:id', (req, res) => {
     });
 });
 
+app.get('/products/:id/recommendation', (req, res) => {
+  //REST API 방식으로 입력
+  const { id } = req.params; // Destructring 방식
+  models.Product.findOne({
+    where: {
+      id,
+    },
+  })
+    .then((product) => {
+      const type = product.type;
+      models.Product.findAll({
+        where: {
+          type, // 같은 type을 찾는다.
+          id: {
+            [models.Sequelize.Op.ne]: id, // []안에 변수를 넣을 수 있는데 이 변수의 값이 key가 된다. // 자신의  id와 일치 하지 않는 상품을 찾겠다. Op: operate, ne: not equal
+          },
+        },
+      }).then((products) => {
+        res.send({ products });
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('에러가 발생했습니다.');
+    });
+});
+
 app.listen(port, () => {
   models.sequelize
     .sync()
